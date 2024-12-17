@@ -4,6 +4,13 @@ class Game {
   width!: number;
   height!: number;
 
+  delta = 0;
+  last = 0;
+
+  speed = 64;
+  p1 = 0;
+  p2 = 0;
+
   constructor() {
     this.canvas;
     this.ctx;
@@ -11,13 +18,13 @@ class Game {
     this.height;
 
     this.init();
+    requestAnimationFrame(this.loop.bind(this));
   }
 
   init() {
     this.canvas = this.createCanvas(640, 480);
     console.log(document.getElementById("board"));
     document.getElementById("board")!.appendChild(this.canvas);
-    this.test();
   }
 
   createCanvas(width: number, height: number): HTMLCanvasElement {
@@ -67,14 +74,36 @@ class Game {
     return floor ? Math.floor(Math.random() * x) : Math.random() * x;
   }
 
-  test() {
-    for (let i = 0; i < 600; i++) {
-      this.sphere({
-        x: this.rand(this.width),
-        y: this.rand(this.height),
-        r: this.rand(3, false),
-      });
-    }
+  loop(ms: any) {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    const t = ms / 1000;
+    this.delta = t - this.last;
+    this.last = t;
+
+    this.sphere({
+      x: this.p1,
+      y: 70,
+      r: 20,
+    });
+
+    this.sphere({
+      x: this.p2,
+      y: 120,
+      r: 20,
+    });
+
+    this.p1 += this.speed * this.delta;
+    this.p2 += this.speed * (1 / 60);
+    if (this.p1 + 20 > this.width) this.p1 = 20;
+    if (this.p2 + 20 > this.width) this.p2 = 20;
+
+    this.ctx.strokeText(
+      `Frame length: ${(this.delta * 1000).toFixed(2)} ms`,
+      10,
+      30
+    );
+    this.ctx.strokeText(`Total time: ${ms.toFixed(2)}`, 10, 10);
+    requestAnimationFrame(this.loop.bind(this));
   }
 }
 
