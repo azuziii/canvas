@@ -101,4 +101,10 @@ export default class KeyControls {
 		}
 		return 0;
 	}
+
+	reset() {
+		for (let key in this.keys) {
+			delete this.keys[key];
+		}
+	}
 }
