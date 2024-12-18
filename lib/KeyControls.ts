@@ -50,10 +50,7 @@ type KeyboardKey =
 export default class KeyControls {
 	keys: { [s: string]: any };
 	constructor() {
-		console.log(111);
-		this.keys = {
-			test: 1,
-		};
+		this.keys = {};
 		this.init();
 	}
 
@@ -63,15 +60,14 @@ export default class KeyControls {
 
 	attachEvents() {
 		document.addEventListener("keydown", (e: KeyboardEvent) => {
-			console.log(e.key, e.code);
-			if (["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"].includes(e.key))
+			if (["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"].includes(e.code))
 				e.preventDefault();
-			this.keys[e.key] = true;
+			this.keys[e.code] = true;
 		});
 
 		document.addEventListener("keyup", (e: KeyboardEvent) => {
-			// this.keys[e.key] = false;
-			delete this.keys[e.key];
+			// this.keys[e.code] = false;
+			delete this.keys[e.code];
 		});
 	}
 

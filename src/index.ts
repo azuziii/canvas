@@ -5,17 +5,26 @@ class Game {
 	ctx!: CanvasRenderingContext2D;
 	width!: number;
 	height!: number;
-	constrols!: KeyControls;
+	controls!: KeyControls;
 
-<<<<<<< HEAD
+	delta = 0;
+	last = 0;
+
+	speed = 64;
+	p1 = 0;
+	p2 = 0;
+
+	color = 0;
+
 	constructor() {
 		this.canvas;
 		this.ctx;
 		this.width;
 		this.height;
-		this.constrols = new KeyControls();
+		this.controls = new KeyControls();
 
 		this.init();
+		requestAnimationFrame(this.loop.bind(this));
 	}
 
 	init() {
@@ -23,30 +32,6 @@ class Game {
 		console.log(document.getElementById("board"));
 		document.getElementById("board")!.appendChild(this.canvas);
 	}
-=======
-  delta = 0;
-  last = 0;
-
-  speed = 64;
-  p1 = 0;
-  p2 = 0;
-
-  constructor() {
-    this.canvas;
-    this.ctx;
-    this.width;
-    this.height;
-
-    this.init();
-    requestAnimationFrame(this.loop.bind(this));
-  }
-
-  init() {
-    this.canvas = this.createCanvas(640, 480);
-    console.log(document.getElementById("board"));
-    document.getElementById("board")!.appendChild(this.canvas);
-  }
->>>>>>> d552b4749efa4962dc9b1bcbcbd25723587a04c3
 
 	createCanvas(width: number, height: number): HTMLCanvasElement {
 		const canvas = document.createElement("canvas");
@@ -95,49 +80,40 @@ class Game {
 		return floor ? Math.floor(Math.random() * x) : Math.random() * x;
 	}
 
-<<<<<<< HEAD
-	test() {
-		for (let i = 0; i < 600; i++) {
-			this.sphere({
-				x: this.rand(this.width),
-				y: this.rand(this.height),
-				r: this.rand(3, false),
-			});
+	loop(ms: any) {
+		this.ctx.clearRect(0, 0, this.width, this.height);
+		const t = ms / 1000;
+		this.delta = t - this.last;
+		this.last = t;
+
+		if (!this.controls.action) {
+			this.color += 10;
+			if (this.color > 360) {
+				this.color = 0;
+			}
 		}
+
+		this.sphere({
+			x: this.p1,
+			y: 70,
+			r: 20,
+			color: `hsl(${this.color}, 50%, 50%)`,
+		});
+
+		this.sphere({
+			x: this.p2,
+			y: 120,
+			r: 20,
+			color: `hsl(${this.color}, 50%, 50%)`,
+		});
+
+		this.p1 += this.controls.x * this.delta * 100;
+		this.p2 += this.controls.x * (1 / 60) * 100;
+		if (this.p1 + 20 > this.width) this.p1 = 20;
+		if (this.p2 + 20 > this.width) this.p2 = 20;
+
+		requestAnimationFrame(this.loop.bind(this));
 	}
-=======
-  loop(ms: any) {
-    this.ctx.clearRect(0, 0, this.width, this.height);
-    const t = ms / 1000;
-    this.delta = t - this.last;
-    this.last = t;
-
-    this.sphere({
-      x: this.p1,
-      y: 70,
-      r: 20,
-    });
-
-    this.sphere({
-      x: this.p2,
-      y: 120,
-      r: 20,
-    });
-
-    this.p1 += this.speed * this.delta;
-    this.p2 += this.speed * (1 / 60);
-    if (this.p1 + 20 > this.width) this.p1 = 20;
-    if (this.p2 + 20 > this.width) this.p2 = 20;
-
-    this.ctx.strokeText(
-      `Frame length: ${(this.delta * 1000).toFixed(2)} ms`,
-      10,
-      30
-    );
-    this.ctx.strokeText(`Total time: ${ms.toFixed(2)}`, 10, 10);
-    requestAnimationFrame(this.loop.bind(this));
-  }
->>>>>>> d552b4749efa4962dc9b1bcbcbd25723587a04c3
 }
 
 const game = new Game();
