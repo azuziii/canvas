@@ -81,8 +81,6 @@ class Game {
 			y: 10,
 		};
 
-		this.scoreAmount += 10;
-
 		this.scene.add(this.score);
 
 		this.scene.add(this.bullets);
@@ -92,6 +90,8 @@ class Game {
 		requestAnimationFrame(this.loop.bind(this));
 	}
 
+	start() {}
+
 	fireBullet(x: number, y: number) {
 		const bullet = new Sprite(this.textures.bullet);
 		bullet.pos.x = x;
@@ -99,9 +99,9 @@ class Game {
 
 		bullet.update = function ({ delta, width }) {
 			this.pos.x += 400 * delta;
-
-			if (bullet.pos.x >= this.width + bullet.width / 2) {
-				bullet.dead = true;
+			console.log(bullet.pos.x);
+			if (this.pos.x >= width + this.width / 2) {
+				this.dead = true;
 			}
 		};
 
@@ -112,14 +112,58 @@ class Game {
 		const enemy = new Sprite(this.textures.enemy);
 		enemy.pos.x = this.width + enemy.width;
 		enemy.pos.y = Math.random() * (this.height - enemy.height);
-		enemy.update = function ({ delta, width }) {
-			enemy.pos.x += delta * speed;
+		enemy.update = ({ delta, width }) => {
+			enemy.pos.x += delta * speed * 5;
 
-			if (enemy.pos.x + enemy.width < 0) {
+			if (enemy.pos.x < 0) {
+				if (!this.gameOver) this.doGameOver();
 				enemy.dead = true;
 			}
 		};
 		this.enemies.add(enemy);
+	}
+
+	doGameOver() {
+		this.gameOver = true;
+		const gameOverText = new Text("Game Over", {
+			font: "50px sans-serif",
+			fill: "#8b8994",
+			align: "center",
+			line: "top",
+		});
+
+		gameOverText.pos.x = this.width / 2;
+		gameOverText.pos.y = 120;
+
+		const countdownText = new Text("Starting in 5", {
+			font: "50px sans-serif",
+			fill: "#8b8994",
+			align: "center",
+			line: "top",
+		});
+
+		countdownText.pos.x = this.width / 2;
+		countdownText.pos.y = 200;
+
+		let i = 4;
+
+		let int = setInterval(() => {
+			if (i == 0) {
+				clearInterval(int);
+				this.scene.remove(countdownText);
+				this.scene.remove(gameOverText);
+				this.gameOver = false;
+			}
+
+			countdownText.text = `Starting in ${i}`;
+			i--;
+		}, 1000);
+
+		this.scene.add(countdownText);
+		this.scene.add(gameOverText);
+		this.scene.remove(this.player);
+		this.scene.remove(this.bullets);
+		this.scene.remove(this.enemies);
 	}
 
 	rand(x: number, floor: boolean = true) {
@@ -130,10 +174,9 @@ class Game {
 		const t = ms / 1000;
 		this.delta = t - this.last;
 		this.last = t;
-		console.log(this.score);
 		this.score.text = `Score: ${this.scoreAmount}`;
 
-		if (this.controls.action && t - this.lastshot > 0.15) {
+		if (!this.gameOver && this.controls.action && t - this.lastshot > 0.15) {
 			this.lastshot = t;
 			this.fireBullet(
 				this.player.pos.x + this.player.width,
@@ -141,7 +184,7 @@ class Game {
 			);
 		}
 
-		if (t - this.lastSpawn > this.spawnSpeed) {
+		if (!this.gameOver && t - this.lastSpawn > this.spawnSpeed) {
 			this.lastSpawn = t;
 			this.spawnEnemy(-50 - Math.random() * Math.random() * 100);
 			this.spawnSpeed =
@@ -152,7 +195,6 @@ class Game {
 			this.bullets.children.forEach((bullet: Sprite) => {
 				const dx = enemy.pos.x + 16 - (bullet.pos.x + 8);
 				const dy = enemy.pos.y + 16 - (bullet.pos.y + 8);
-				console.log(Math.sqrt(dx * dx + dy * dy) < 24);
 				if (Math.sqrt(dx * dx + dy * dy) < 24) {
 					enemy.dead = true;
 					bullet.dead = true;
@@ -161,13 +203,13 @@ class Game {
 			});
 		});
 
-		this.enemies.children.forEach((x: Sprite, index: number) => {
-			if (x.dead) this.enemies.children.splice(index, 1);
-		});
+		this.enemies.children = this.enemies.children.filter(
+			(x: Sprite) => !x.dead,
+		);
 
-		this.bullets.children.forEach((x: Sprite, index: number) => {
-			if (x.dead) this.enemies.children.splice(index, 1);
-		});
+		this.bullets.children = this.bullets.children.filter(
+			(x: Sprite) => !x.dead,
+		);
 
 		this.scene.update({
 			delta: this.delta,
