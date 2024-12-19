@@ -1,8 +1,4 @@
 export default class Container {
-	pos = {
-		x: 0,
-		y: 0,
-	};
 	children: any[] = [];
 
 	constructor() {}

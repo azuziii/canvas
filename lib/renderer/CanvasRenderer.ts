@@ -1,5 +1,5 @@
 import Container from "../Container";
-import Sprite from "./Sprite";
+import Sprite from "../Sprite";
 
 export default class CanvasRenderer {
 	view: HTMLCanvasElement;
@@ -22,8 +22,12 @@ export default class CanvasRenderer {
 
 		const { ctx } = this;
 
-		function renderRec(container: Container) {
+		function renderRec(container: Container, t: boolean = false) {
 			for (let child of container.children) {
+				if (child.children) {
+					renderRec(child, true);
+				}
+
 				if (!child.visible) continue;
 
 				ctx.save();
@@ -40,11 +44,7 @@ export default class CanvasRenderer {
 					if (line) ctx.textBaseline = line;
 					ctx.fillText(child.text, 0, 0);
 				} else if (child.texture) {
-					ctx.drawImage(child.texture.img, child.pos.x, child.pos.y);
-				}
-
-				if (child.children) {
-					renderRec(child);
+					ctx.drawImage(child.texture.img, 0, 0);
 				}
 				ctx.restore();
 			}
