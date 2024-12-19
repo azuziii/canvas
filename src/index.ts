@@ -29,6 +29,9 @@ class Game {
 	lastshot = 0;
 	lastSpawn = 0;
 	spawnSpeed = 1;
+	score!: Text;
+	scoreAmount = 0;
+	gameOver = false;
 	player!: Sprite;
 
 	textures!: { [s: string]: Texture };
@@ -49,6 +52,8 @@ class Game {
 			enemy: new Texture("res/images/baddie.png"),
 		};
 
+		this.scene.add(new Sprite(this.textures.background));
+
 		const ship = new Sprite(this.textures.spaceship);
 		this.player = ship;
 		ship.pos.x = 120;
@@ -64,7 +69,22 @@ class Game {
 			if (pos.y > height - ship.height) pos.y = height - ship.height;
 		};
 
-		this.scene.add(new Sprite(this.textures.background));
+		this.score = new Text(`Score: ${this.score}`, {
+			font: "20px sans-serif",
+			fill: "#8b8994",
+			align: "center",
+			line: "top",
+		});
+
+		this.score.pos = {
+			x: 100,
+			y: 10,
+		};
+
+		this.scoreAmount += 10;
+
+		this.scene.add(this.score);
+
 		this.scene.add(this.bullets);
 		this.scene.add(ship);
 		this.scene.add(this.enemies);
@@ -79,6 +99,10 @@ class Game {
 
 		bullet.update = function ({ delta, width }) {
 			this.pos.x += 400 * delta;
+
+			if (bullet.pos.x >= this.width + bullet.width / 2) {
+				bullet.dead = true;
+			}
 		};
 
 		this.bullets.add(bullet);
@@ -90,6 +114,10 @@ class Game {
 		enemy.pos.y = Math.random() * (this.height - enemy.height);
 		enemy.update = function ({ delta, width }) {
 			enemy.pos.x += delta * speed;
+
+			if (enemy.pos.x + enemy.width < 0) {
+				enemy.dead = true;
+			}
 		};
 		this.enemies.add(enemy);
 	}
@@ -102,6 +130,8 @@ class Game {
 		const t = ms / 1000;
 		this.delta = t - this.last;
 		this.last = t;
+		console.log(this.score);
+		this.score.text = `Score: ${this.scoreAmount}`;
 
 		if (this.controls.action && t - this.lastshot > 0.15) {
 			this.lastshot = t;
@@ -118,12 +148,25 @@ class Game {
 				this.spawnSpeed < 0.05 ? 0.6 : this.spawnSpeed * 0.97 + 0.001;
 		}
 
-		this.bullets.children = this.bullets.children.filter((bullet) => {
-			return bullet.pos.x < this.width + bullet.width / 2;
+		this.enemies.children.forEach((enemy: Sprite) => {
+			this.bullets.children.forEach((bullet: Sprite) => {
+				const dx = enemy.pos.x + 16 - (bullet.pos.x + 8);
+				const dy = enemy.pos.y + 16 - (bullet.pos.y + 8);
+				console.log(Math.sqrt(dx * dx + dy * dy) < 24);
+				if (Math.sqrt(dx * dx + dy * dy) < 24) {
+					enemy.dead = true;
+					bullet.dead = true;
+					this.scoreAmount += 1;
+				}
+			});
 		});
 
-		this.enemies.children = this.enemies.children.filter((enemy) => {
-			return enemy.pos.x + enemy.width > 0;
+		this.enemies.children.forEach((x: Sprite, index: number) => {
+			if (x.dead) this.enemies.children.splice(index, 1);
+		});
+
+		this.bullets.children.forEach((x: Sprite, index: number) => {
+			if (x.dead) this.enemies.children.splice(index, 1);
 		});
 
 		this.scene.update({

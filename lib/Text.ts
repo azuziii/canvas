@@ -8,9 +8,9 @@ interface Style {
 export default class Text {
 	pos = { x: 0, y: 0 };
 	constructor(
-		private text = "",
-		private style: Style = {},
-		private visible: boolean = true,
+		public text = "",
+		public style: Style = {},
+		public visible: boolean = true,
 	) {}
 
 	update({ delta }: { delta: number }) {}
