@@ -1,9 +1,13 @@
-export default class KeyControls {
-	canvas: HTMLCanvasElement;
-	x = 0;
-	y = 0;
-	constructor(canvas: HTMLCanvasElement) {
-		this.canvas = canvas;
+export default class MouseControls {
+	pos = {
+		x: 0,
+		y: 0,
+	};
+	isDown = false;
+	isPressed = false;
+	isRealesed = false;
+
+	constructor(private canvas: HTMLCanvasElement) {
 		this.init();
 	}
 
@@ -18,11 +22,27 @@ export default class KeyControls {
 	}
 
 	move({ clientX, clientY }: MouseEvent) {
-		this.x = clientX;
-		this.y = clientY;
+		const { canvas, pos } = this;
+		const rect = canvas.getBoundingClientRect();
+		const xr = canvas.width / canvas.clientWidth;
+		const yr = canvas.height / canvas.clientHeight;
+		pos.x = (clientX - rect.left) * xr;
+		pos.y = (clientY - rect.top) * yr;
 	}
 
-	down() {}
+	down(e: MouseEvent) {
+		this.isDown = true;
+		this.isPressed = true;
+		this.move(e);
+	}
 
-	up() {}
+	up() {
+		this.isDown = false;
+		this.isRealesed = true;
+	}
+
+	update() {
+		this.isRealesed = false;
+		this.isPressed = false;
+	}
 }

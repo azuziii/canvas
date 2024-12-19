@@ -1,4 +1,5 @@
 import KeyControls from "../lib/KeyControls.js";
+import MouseControls from "../lib/mouseControls.js";
 
 class Game {
 	canvas!: HTMLCanvasElement;
@@ -6,6 +7,7 @@ class Game {
 	width!: number;
 	height!: number;
 	controls!: KeyControls;
+	mouse!: MouseControls;
 
 	delta = 0;
 	last = 0;
@@ -29,6 +31,8 @@ class Game {
 
 	init() {
 		this.canvas = this.createCanvas(640, 480);
+		this.mouse = new MouseControls(this.canvas);
+
 		console.log(document.getElementById("board"));
 		document.getElementById("board")!.appendChild(this.canvas);
 	}
@@ -81,12 +85,11 @@ class Game {
 	}
 
 	loop(ms: any) {
-		this.ctx.clearRect(0, 0, this.width, this.height);
 		const t = ms / 1000;
 		this.delta = t - this.last;
 		this.last = t;
-
-		if (!this.controls.action) {
+		console.log(this.mouse.isDown);
+		if (this.mouse.isDown) {
 			this.color += 10;
 			if (this.color > 360) {
 				this.color = 0;
@@ -94,24 +97,13 @@ class Game {
 		}
 
 		this.sphere({
-			x: this.p1,
-			y: 70,
+			x: this.mouse.pos.x,
+			y: this.mouse.pos.y,
 			r: 20,
 			color: `hsl(${this.color}, 50%, 50%)`,
 		});
 
-		this.sphere({
-			x: this.p2,
-			y: 120,
-			r: 20,
-			color: `hsl(${this.color}, 50%, 50%)`,
-		});
-
-		this.p1 += this.controls.x * this.delta * 100;
-		this.p2 += this.controls.x * (1 / 60) * 100;
-		if (this.p1 + 20 > this.width) this.p1 = 20;
-		if (this.p2 + 20 > this.width) this.p2 = 20;
-
+		this.mouse.update();
 		requestAnimationFrame(this.loop.bind(this));
 	}
 }
