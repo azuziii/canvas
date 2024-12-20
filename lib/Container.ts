@@ -1,3 +1,5 @@
+import Sprite from "./Sprite";
+
 export default class Container {
 	children: any[] = [];
 
@@ -14,10 +16,15 @@ export default class Container {
 	}
 
 	update(dt: number, t: number) {
-		for (let child of this.children) {
+		this.children = this.children.filter((child) => {
 			if (child.update) {
-				child.update(dt);
+				child.update(dt, t, this);
 			}
-		}
+			return child.dead ? false : true;
+		});
+	}
+
+	map(fn: (...args: any[]) => any): any[] {
+		return this.children.map(fn);
 	}
 }

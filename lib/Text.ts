@@ -6,11 +6,11 @@ interface Style {
 }
 
 export default class Text {
-	pos = { x: 0, y: 0 };
 	constructor(
 		public text = "",
 		public style: Style = {},
 		public visible: boolean = true,
+		public pos = { x: 0, y: 0 },
 	) {}
 
 	update(dt: number) {}
