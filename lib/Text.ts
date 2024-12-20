@@ -13,5 +13,5 @@ export default class Text {
 		public visible: boolean = true,
 	) {}
 
-	update({ delta }: { delta: number }) {}
+	update(dt: number) {}
 }

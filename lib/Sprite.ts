@@ -10,5 +10,5 @@ export default class Sprite {
 		this.height = texture.img.height;
 	}
 
-	update(options: { delta: number; width: number; height: number }) {}
+	update(dt: number) {}
 }

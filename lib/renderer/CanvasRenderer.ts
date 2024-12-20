@@ -1,5 +1,4 @@
 import Container from "../Container";
-import Sprite from "../Sprite";
 
 export default class CanvasRenderer {
 	view: HTMLCanvasElement;

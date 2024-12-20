@@ -8,7 +8,7 @@ import {
 	Sprite,
 } from "../lib/index.js";
 
-class Game {
+class aaaaaaaaaa {
 	scene = new Container();
 	bullets = new Container();
 	enemies = new Container();
@@ -58,15 +58,15 @@ class Game {
 		this.player = ship;
 		ship.pos.x = 120;
 		ship.pos.y = this.height / 2 - 16;
-		ship.update = ({ delta, width, height }) => {
+		ship.update = (delta: number) => {
 			const { pos } = ship;
 			pos.x += this.controls.x * delta * 200;
 			pos.y += this.controls.y * delta * 200;
 
 			if (pos.x < 0) pos.x = 0;
-			if (pos.x > width - ship.width) pos.x = width - ship.width;
+			if (pos.x > this.width - ship.width) pos.x = this.width - ship.width;
 			if (pos.y < 0) pos.y = 0;
-			if (pos.y > height - ship.height) pos.y = height - ship.height;
+			if (pos.y > this.height - ship.height) pos.y = this.height - ship.height;
 		};
 
 		this.score = new Text(`Score: ${this.score}`, {
@@ -97,7 +97,7 @@ class Game {
 		bullet.pos.x = x;
 		bullet.pos.y = y;
 
-		bullet.update = function ({ delta, width }) {
+		bullet.update = function (delta: number) {
 			this.pos.x += 400 * delta;
 
 			if (bullet.pos.x >= this.width + bullet.width / 2) {
@@ -112,7 +112,7 @@ class Game {
 		const enemy = new Sprite(this.textures.enemy);
 		enemy.pos.x = this.width + enemy.width;
 		enemy.pos.y = Math.random() * (this.height - enemy.height);
-		enemy.update = function ({ delta, width }) {
+		enemy.update = function (delta: number) {
 			enemy.pos.x += delta * speed;
 
 			if (enemy.pos.x + enemy.width < 0) {
@@ -169,15 +169,11 @@ class Game {
 			if (x.dead) this.enemies.children.splice(index, 1);
 		});
 
-		this.scene.update({
-			delta: this.delta,
-			width: this.width,
-			height: this.height,
-		});
+		this.scene.update(this.delta, t);
 		this.renderer.render(this.scene);
 
 		requestAnimationFrame(this.loop.bind(this));
 	}
 }
 
-new Game();
+new aaaaaaaaaa();

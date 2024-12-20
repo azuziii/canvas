@@ -13,10 +13,10 @@ export default class Container {
 		return child;
 	}
 
-	update(options: { delta: number; width: number; height: number }) {
+	update(dt: number, t: number) {
 		for (let child of this.children) {
 			if (child.update) {
-				child.update(options);
+				child.update(dt);
 			}
 		}
 	}
