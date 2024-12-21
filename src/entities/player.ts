@@ -2,7 +2,11 @@ import { KeyControls, Texture, TileSprite } from "../../lib/index.js";
 import { randf } from "../../lib/utils/math.js";
 
 export default class Player extends TileSprite {
-	public speed = randf(0.9, 1.2);
+	public speed = 0.15;
+	public dir = {
+		x: 1,
+		y: 0,
+	};
 
 	constructor(public controls: KeyControls) {
 		super(new Texture("res/images/player-walk.png"), 32, 32);
@@ -37,16 +41,28 @@ export default class Player extends TileSprite {
 		super.update(dt);
 
 		const { pos, scale, speed, anchor, anims, controls } = this;
-		const { x } = controls;
+		const { x, y } = controls;
 
 		pos.x += x * speed * dt * 100;
+		pos.y += y * speed * dt * 100;
 
-		if (x) {
-			anims.play("walk");
-			scale.x = Math.sign(x);
-			anchor.x = scale.x > 0 ? -16 : 16;
-		} else {
-			anims.play("idle");
+		if (x && x !== this.dir.x) {
+			this.dir.x = x;
+			this.dir.y = 0;
+			pos.y = Math.round(pos.y / 32) * 32;
+			// anims.play("walk");
+			// scale.x = Math.sign(x);
+			// anchor.x = scale.x > 0 ? -16 : 16;
+		} else if (y && y !== this.dir.y) {
+			this.dir.x = 0;
+			this.dir.y = y;
+			pos.x = Math.round(pos.x / 32) * 32;
+			// anims.play("walk");
+			// scale.y = Math.sign(y);
+			// anchor.y = scale.y > 0 ? -16 : 16;
 		}
+
+		pos.x += this.dir.x * dt * (32 / speed);
+		pos.y += this.dir.y * dt * (32 / speed);
 	}
 }

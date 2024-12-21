@@ -6,6 +6,7 @@ import CanvasRenderer from "./renderer/CanvasRenderer.js";
 import Sprite from "./Sprite.js";
 import Text from "./Text.js";
 import Texture from "./Texture.js";
+import TileMap from "./TileMap.js";
 import TileSprite from "./TileSprite.js";
 
 export {
@@ -18,4 +19,5 @@ export {
 	Sprite,
 	Game,
 	TileSprite,
+	TileMap,
 };

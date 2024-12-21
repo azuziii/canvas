@@ -1,3 +1,5 @@
+import { Frame } from "../types/frame";
+
 function rand(min: number, max?: number): number {
 	return Math.floor(randf(min, max));
 }
@@ -27,10 +29,23 @@ function degToRad(deg: number) {
 	return (Math.PI / 180) * deg;
 }
 
-function distance(a: { x: number; y: number }, b: { x: number; y: number }) {
+function distance(a: Frame, b: Frame) {
 	const dx = a.x - b.x;
 	const dy = a.y - b.y;
 	return Math.sqrt(dx * dx + dy * dy);
 }
 
-export { rand, randf, randOneIn, randOneFrom, radToDeg, degToRad, distance };
+function clamp(x: number, min: number, max: number) {
+	return Math.max(min, Math.min(x, max));
+}
+
+export {
+	rand,
+	randf,
+	randOneIn,
+	randOneFrom,
+	radToDeg,
+	degToRad,
+	distance,
+	clamp,
+};

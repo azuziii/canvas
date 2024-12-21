@@ -6,22 +6,29 @@ import {
 	MouseControls,
 	TileSprite,
 	KeyControls,
+	TileMap,
 } from "../lib/index.js";
-import { distance, rand, randf, randOneIn } from "../lib/utils/math.js";
+import { clamp, distance, rand, randf, randOneIn } from "../lib/utils/math.js";
 import Player from "./entities/player.js";
+import Level from "./Level.js";
+
+const controls = new KeyControls();
 
 const game = new Game(640, 320);
 const { scene, width, height } = game;
 
-const controls = new KeyControls();
+const map = new Level(width, height);
+const player = new Player(controls);
 
-for (let i = 0; i < 30; i++) {
-	const squizz = new Player(controls);
-	squizz.pos = {
-		x: Math.random() * width,
-		y: Math.random() * height,
-	};
-	scene.add(squizz);
-}
+scene.add(map);
+scene.add(player);
 
-game.run();
+game.run(() => {
+	const { pos } = player;
+	const {
+		bounds: { top, right, bottom, left },
+	} = map;
+
+	player.pos.x = clamp(pos.x, left, right);
+	player.pos.y = clamp(pos.y, top, bottom);
+});
