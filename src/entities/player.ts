@@ -29,7 +29,7 @@ export default class Player extends TileSprite {
 			0.15 * this.speed,
 		);
 
-		anims.play("walk");
+		// anims.play("walk");
 	}
 
 	override update(dt: number) {
