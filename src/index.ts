@@ -31,4 +31,6 @@ game.run(() => {
 
 	player.pos.x = clamp(pos.x, left, right);
 	player.pos.y = clamp(pos.y, top, bottom);
+
+	const g = map.checkGround(player.pos);
 });

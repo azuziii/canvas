@@ -1,5 +1,4 @@
 import { KeyControls, Texture, TileSprite } from "../../lib/index.js";
-import { randf } from "../../lib/utils/math.js";
 
 export default class Player extends TileSprite {
 	public speed = 0.15;
@@ -10,10 +9,6 @@ export default class Player extends TileSprite {
 
 	constructor(public controls: KeyControls) {
 		super(new Texture("res/images/player-walk.png"), 32, 32);
-		this.anchor = {
-			x: -16,
-			y: -16,
-		};
 
 		const { anims } = this;
 
