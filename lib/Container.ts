@@ -2,6 +2,11 @@ import Sprite from "./Sprite";
 
 export default class Container {
 	children: any[] = [];
+	public pos = {
+		x: 0,
+		y: 0,
+	};
+	public visible = true;
 
 	constructor() {}
 
@@ -18,7 +23,7 @@ export default class Container {
 	update(dt: number, t: number) {
 		this.children = this.children.filter((child) => {
 			if (child.update) {
-				child.update(dt, t, this);
+				child.update(dt, t);
 			}
 			return child.dead ? false : true;
 		});

@@ -1,6 +1,5 @@
 import TileSprite from "./TileSprite.js";
 import { Frame } from "./types/frame";
-import { rand, randOneIn } from "./utils/math.js";
 
 class Anim {
 	currFrame!: number;
@@ -31,8 +30,10 @@ class AnimManager {
 	public anims: { [s: string]: any } = {};
 	public running = false;
 	public current: string | null = null;
-
-	constructor(public e: TileSprite, private frameSource = e.frame || e) {}
+	public frameSource = { x: 0, y: 0 };
+	constructor(public e: TileSprite) {
+		this.frameSource = e.frame || e;
+	}
 
 	add(name: string, frames: Frame[], speed: number) {
 		this.anims[name] = new Anim(frames, speed);

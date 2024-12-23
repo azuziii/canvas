@@ -1,7 +1,7 @@
 import { KeyControls, Texture, TileSprite } from "../../lib/index.js";
 
 export default class Player extends TileSprite {
-	public speed = 0.15;
+	public speed = 0.3;
 	public dir = {
 		x: 1,
 		y: 0,
@@ -37,9 +37,6 @@ export default class Player extends TileSprite {
 
 		const { pos, scale, speed, anchor, anims, controls } = this;
 		const { x, y } = controls;
-
-		pos.x += x * speed * dt * 100;
-		pos.y += y * speed * dt * 100;
 
 		if (x && x !== this.dir.x) {
 			this.dir.x = x;
